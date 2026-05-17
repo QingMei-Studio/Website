@@ -124,6 +124,8 @@
             cursor: pointer;
             border-radius: 20px;
             transition: all 0.3s;
+            width: 140px; 
+            text-align: center;
         }
 
         /* 页面切换逻辑 */
@@ -370,7 +372,12 @@
     </footer>
 
     <script>
+        const pagesOrder = ['home', 'philosophy', 'spaces', 'app'];
+        let currentPage = 'home';
+
         function switchPage(pageId) {
+            currentPage = pageId; 
+
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
             
@@ -378,6 +385,8 @@
             if(pageId !== 'home') {
                 document.getElementById('link-' + pageId).classList.add('active');
             }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function toggleA11y() {
@@ -385,6 +394,44 @@
             const btn = document.querySelector('.a11y-toggle');
             body.classList.toggle('a11y-mode');
             btn.textContent = body.classList.contains('a11y-mode') ? "● 恢复默认视觉" : "○ 视觉无障碍模式";
+        }
+
+        // 移动端滑动手势支持
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        if (window.innerWidth <= 768) {
+            window.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }, { passive: true });
+
+            window.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
+                handleSwipe();
+            }, { passive: true });
+        }
+
+        function handleSwipe() {
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+            
+            if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY)) {
+                let currentIndex = pagesOrder.indexOf(currentPage);
+                
+                if (diffX < 0) {
+                    if (currentIndex < pagesOrder.length - 1) {
+                        switchPage(pagesOrder[currentIndex + 1]);
+                    }
+                } else {
+                    if (currentIndex > 0) {
+                        switchPage(pagesOrder[currentIndex - 1]);
+                    }
+                }
+            }
         }
     </script>
 </body>
