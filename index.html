@@ -103,7 +103,22 @@
             transition: color 0.3s;
         }
         
-        .nav-links a:hover, .nav-links a.active { color: var(--sage-green); }
+        /* 修复：将 .active 状态独立出来 */
+        .nav-links a.active { 
+            color: var(--sage-green); 
+        }
+
+        /* 修复：完美解决移动端“触摸滞留高亮”的灵魂防线 */
+        @media (hover: hover) {
+            .nav-links a:hover { 
+                color: var(--sage-green); 
+            }
+            .cta-button:hover {
+                color: var(--sage-green);
+                border-color: var(--sage-green);
+            }
+        }
+
         .nav-links a.active::after {
             content: '';
             position: absolute;
@@ -160,11 +175,6 @@
             transition: color 0.3s, border-color 0.3s;
         }
 
-        .cta-button:hover {
-            color: var(--sage-green);
-            border-color: var(--sage-green);
-        }
-
         /* ----- 理念页样式 (Philosophy) ----- */
         .philosophy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1200px; margin: 0 auto;}
         .phil-header { grid-column: 1 / -1; text-align: center; margin-bottom: 20px; }
@@ -194,7 +204,6 @@
            移动端响应式适配 (Mobile Responsiveness)
            ========================================= */
         @media screen and (max-width: 768px) {
-            /* 导航栏适配：垂直堆叠 */
             nav {
                 padding: 25px 20px;
                 flex-direction: column;
@@ -208,12 +217,10 @@
                 font-size: 12px;
             }
 
-            /* 全局页面容器间距缩小 */
             .page-section {
                 padding: 30px 20px;
             }
 
-            /* 辅助图形自适应 */
             .bg-graphic {
                 width: 120%;
                 top: 0;
@@ -221,7 +228,6 @@
                 opacity: 0.15;
             }
 
-            /* 首页适配 */
             .hero h1 {
                 font-size: 40px;
                 letter-spacing: 4px;
@@ -233,7 +239,6 @@
                 margin-bottom: 40px;
             }
 
-            /* 理念页适配：改为单列 */
             .philosophy-grid {
                 grid-template-columns: 1fr;
                 gap: 40px;
@@ -248,7 +253,6 @@
                 font-size: 16px;
             }
 
-            /* 空间页适配：改为单列 */
             .spaces-title {
                 font-size: 32px;
                 margin-bottom: 40px;
@@ -263,7 +267,6 @@
                 padding: 25px;
             }
 
-            /* 应用页适配：改为单列 */
             .app-grid {
                 grid-template-columns: 1fr;
                 gap: 50px;
@@ -275,7 +278,6 @@
                 display: block;
             }
 
-            /* 页脚适配：垂直居中 */
             footer {
                 padding: 30px 20px;
                 flex-direction: column;
@@ -402,18 +404,19 @@
         let touchEndX = 0;
         let touchEndY = 0;
 
-        if (window.innerWidth <= 768) {
-            window.addEventListener('touchstart', function(e) {
-                touchStartX = e.changedTouches[0].screenX;
-                touchStartY = e.changedTouches[0].screenY;
-            }, { passive: true });
+        window.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
 
-            window.addEventListener('touchend', function(e) {
-                touchEndX = e.changedTouches[0].screenX;
-                touchEndY = e.changedTouches[0].screenY;
+        window.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            
+            if (window.innerWidth <= 768) {
                 handleSwipe();
-            }, { passive: true });
-        }
+            }
+        }, { passive: true });
 
         function handleSwipe() {
             const diffX = touchEndX - touchStartX;
