@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>轻梅工作室 | 数字避风港</title>
     <link rel="icon" type="image/svg+xml" href="sources/LOGO-彩色.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -206,7 +206,9 @@
            ========================================= */
         @media screen and (max-width: 768px) {
             nav {
-                padding: 25px 20px;
+                /* 核心修复：适配刘海屏/灵动岛安全区域 */
+                /* 默认基础 padding 加上设备系统的安全顶部边距 */
+                padding: calc(25px + env(safe-area-inset-top)) 20px 25px 20px;
                 flex-direction: column;
                 gap: 20px;
             }
